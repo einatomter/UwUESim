@@ -1,5 +1,0 @@
-C:\Users\einat\Desktop\Unreal\UwUSim\Intermediate\Build\Win64\UE4Editor\Development\UwUSim\Definitions.UwUSim.h
-C:\Users\einat\Desktop\Unreal\UwUSim\Source\UwUSim\Public\ROSCameraComponent.h
-C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Camera/CameraComponent.h
-C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\CameraComponent.generated.h
-C:\Users\einat\Desktop\Unreal\UwUSim\Intermediate\Build\Win64\UE4Editor\Inc\UwUSim\ROSCameraComponent.generated.h

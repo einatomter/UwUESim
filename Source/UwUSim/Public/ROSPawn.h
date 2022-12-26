@@ -4,6 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+
+#include "ROSIntegration/Classes/RI/Topic.h"
+#include "ROSIntegration/Classes/ROSIntegrationGameInstance.h"
+#include "ROSIntegration/Public/std_msgs/String.h"
+
 #include "ROSPawn.generated.h"
 
 UCLASS()
@@ -14,6 +19,12 @@ class UWUSIM_API AROSPawn : public APawn
 public:
 	// Sets default values for this pawn's properties
 	AROSPawn();
+
+	UPROPERTY(Transient)
+	UTopic* PoseTopic;
+
+	FVector ROSPosePosition;
+	FVector4 ROSPoseOrientation;
 
 protected:
 	// Called when the game starts or when spawned

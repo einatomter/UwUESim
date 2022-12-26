@@ -15,7 +15,8 @@ AROSPawn::AROSPawn()
 void AROSPawn::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	PoseTopic = NewObject<UTopic>(UTopic::StaticClass());
+
 }
 
 // Called every frame

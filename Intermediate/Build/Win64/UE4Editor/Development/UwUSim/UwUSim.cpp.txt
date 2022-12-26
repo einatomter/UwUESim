@@ -1,2 +1,0 @@
-C:\Users\einat\Desktop\Unreal\UwUSim\Intermediate\Build\Win64\UE4Editor\Development\UwUSim\Definitions.UwUSim.h
-C:\Users\einat\Desktop\Unreal\UwUSim\Source\UwUSim\UwUSim.h
