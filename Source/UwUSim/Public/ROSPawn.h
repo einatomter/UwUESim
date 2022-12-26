@@ -7,6 +7,7 @@
 
 #include "ROSIntegration/Classes/RI/Topic.h"
 #include "ROSIntegration/Classes/ROSIntegrationGameInstance.h"
+#include "ROSIntegration/Public/geometry_msgs/Pose.h"
 #include "ROSIntegration/Public/std_msgs/String.h"
 
 #include "ROSPawn.generated.h"
@@ -23,12 +24,18 @@ public:
 	UPROPERTY(Transient)
 	UTopic* PoseTopic;
 
-	FVector ROSPosePosition;
-	FVector4 ROSPoseOrientation;
+	UFUNCTION(BlueprintCallable, Category = "ROSPawn Actions")
+	FVector GetROSPosePosition();
+
+	UFUNCTION(BlueprintCallable, Category = "ROSPawn Actions")
+	FQuat GetROSPoseOrientation();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	FVector ROSPosePosition;
+	FQuat ROSPoseOrientation;
 
 public:	
 	// Called every frame
