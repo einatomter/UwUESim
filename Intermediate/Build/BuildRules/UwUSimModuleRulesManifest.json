@@ -1,0 +1,9 @@
+{
+	"SourceFiles": [
+		"C:\\Users\\einat\\Desktop\\Unreal\\UwUSim\\Source\\UwUSim\\UwUSim.Build.cs",
+		"C:\\Users\\einat\\Desktop\\Unreal\\UwUSim\\Plugins\\ROSIntegration\\Source\\ROSIntegration\\ROSIntegration.Build.cs",
+		"C:\\Users\\einat\\Desktop\\Unreal\\UwUSim\\Source\\UwUSim.Target.cs",
+		"C:\\Users\\einat\\Desktop\\Unreal\\UwUSim\\Source\\UwUSimEditor.Target.cs"
+	],
+	"EngineVersion": "4.27.2"
+}

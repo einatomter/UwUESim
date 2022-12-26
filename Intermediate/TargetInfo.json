@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "UwUSim",
+			"Path": "C:\\Users\\einat\\Desktop\\Unreal\\UwUSim\\Source\\UwUSim.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "UwUSimEditor",
+			"Path": "C:\\Users\\einat\\Desktop\\Unreal\\UwUSim\\Source\\UwUSimEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}
