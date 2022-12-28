@@ -55,14 +55,14 @@ void UROSCameraComponent::BeginPlay()
     // Check for valid ROS instance
     if (!rosinst)
     {
-        UE_LOG(LogTemp, Warning, TEXT("UnrealROSInstance not existing."));
+        UE_LOG(LogActorComponent, Warning, TEXT("UnrealROSInstance not existing."));
         return;
     }
 
     // Check if instance is connected to ROS
     if (!rosinst->bConnectToROS)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Connect to ROS is disabled"));
+        UE_LOG(LogActorComponent, Warning, TEXT("Connect to ROS is disabled"));
         return;
     }
 

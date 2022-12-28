@@ -36,14 +36,14 @@ void AROSPawn::BeginPlay()
     // Check for valid ROS instance
     if (!rosinst)
     {
-        UE_LOG(LogTemp, Warning, TEXT("UnrealROSInstance not existing."));
+        UE_LOG(LogActor, Warning, TEXT("UnrealROSInstance not existing."));
         return;
     }
 
     // Check if instance is connected to ROS
     if (!rosinst->bConnectToROS)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Connect to ROS is disabled"));
+        UE_LOG(LogActor, Warning, TEXT("Connect to ROS is disabled"));
         return;
     }
 
