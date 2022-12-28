@@ -20,11 +20,17 @@ FQuat AROSPawn::GetROSPoseOrientation()
     return ROSPoseOrientation;
 }
 
+bool AROSPawn::IsROSInitialized()
+{
+    return RosInitialized;
+}
+
 // Called when the game starts or when spawned
 void AROSPawn::BeginPlay()
 {
 	Super::BeginPlay();
 
+    RosInitialized = false;
 	UROSIntegrationGameInstance* rosinst = Cast<UROSIntegrationGameInstance>(GetGameInstance());
     
     // Check for valid ROS instance
@@ -41,6 +47,7 @@ void AROSPawn::BeginPlay()
         return;
     }
 
+    RosInitialized = true;
 
 	PoseTopic = NewObject<UTopic>(UTopic::StaticClass());
     PoseTopic->Init(rosinst->ROSIntegrationCore, TEXT("/x3/pose_raw"), TEXT("geometry_msgs/Pose"));

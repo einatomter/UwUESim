@@ -50,6 +50,22 @@ void UROSCameraComponent::BeginPlay()
 {
     Super::BeginPlay();
 
+    UROSIntegrationGameInstance* rosinst = Cast<UROSIntegrationGameInstance>(GetOwner()->GetGameInstance());
+
+    // Check for valid ROS instance
+    if (!rosinst)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("UnrealROSInstance not existing."));
+        return;
+    }
+
+    // Check if instance is connected to ROS
+    if (!rosinst->bConnectToROS)
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Connect to ROS is disabled"));
+        return;
+    }
+
     // Initializing buffers for reading images from the GPU
     ImageColor.AddUninitialized(Width * Height);
     Color->TextureTarget->InitAutoFormat(Width, Height);
@@ -63,27 +79,20 @@ void UROSCameraComponent::BeginPlay()
     CurrentImage = new ImageData(Width, Height);
 
 
+    // Initialize topics
+    // TODO: allow topic selection from editor
     CameraInfoPublisher = NewObject<UTopic>(UTopic::StaticClass());
     ImagePublisher = NewObject<UTopic>(UTopic::StaticClass());
 
-    UROSIntegrationGameInstance* rosinst = Cast<UROSIntegrationGameInstance>(GetOwner()->GetGameInstance());
-    if (rosinst)
-    {
-        CameraInfoPublisher->Init(rosinst->ROSIntegrationCore,
-            TEXT("/unreal_ros/camera_info"),
-            TEXT("sensor_msgs/CameraInfo"));
-        CameraInfoPublisher->Advertise();
+    CameraInfoPublisher->Init(rosinst->ROSIntegrationCore,
+        TEXT("/unreal_ros/camera_info"),
+        TEXT("sensor_msgs/CameraInfo"));
+    CameraInfoPublisher->Advertise();
 
-        // TODO: allow topic selection from editor
-        ImagePublisher->Init(rosinst->ROSIntegrationCore,
-            TEXT("unreal_ros/image_color"),
-            TEXT("sensor_msgs/Image"));
-        ImagePublisher->Advertise();
-    }
-    else {
-        UE_LOG(LogTemp, Warning, TEXT("UnrealROSInstance not existing."));
-    }
-
+    ImagePublisher->Init(rosinst->ROSIntegrationCore,
+        TEXT("unreal_ros/image_color"),
+        TEXT("sensor_msgs/Image"));
+    ImagePublisher->Advertise();
 
 }
 
@@ -95,19 +104,20 @@ void UROSCameraComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 void UROSCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* TickFunction)
 {
     Super::TickComponent(DeltaTime, TickType, TickFunction);
-    // Check if paused
-    //if (Paused)
-    //{
-    //    return;
-    //}
 
-    //if (!messageSent)
-    //{
-    //    // Publish a string to the topic
-    //    TSharedPtr<ROSMessages::std_msgs::String> StringMessage(new ROSMessages::std_msgs::String("This is a tick"));
-    //    ExampleTopic->Publish(StringMessage);
-    //    messageSent = true;
-    //}
+    UROSIntegrationGameInstance* rosinst = Cast<UROSIntegrationGameInstance>(GetOwner()->GetGameInstance());
+
+    // Check for valid ROS instance
+    if (!rosinst)
+    {
+        return;
+    }
+
+    // Check if instance is connected to ROS
+    if (!rosinst->bConnectToROS)
+    {
+        return;
+    }
 
 
     // Check for framerate

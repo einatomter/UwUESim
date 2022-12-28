@@ -30,12 +30,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ROSPawn Actions")
 	FQuat GetROSPoseOrientation();
 
+	UFUNCTION(BlueprintCallable, Category = "ROSPawn Actions")
+	bool IsROSInitialized();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	FVector ROSPosePosition;
 	FQuat ROSPoseOrientation;
+
+	bool RosInitialized;
 
 public:	
 	// Called every frame
