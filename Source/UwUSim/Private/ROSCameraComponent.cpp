@@ -6,10 +6,9 @@
 UROSCameraComponent::UROSCameraComponent() :
     Width(960),
     Height(540),
-    Framerate(30),
+    Framerate(20),
     UseEngineFramerate(false),
     ServerPort(9090),
-    FrameTime(1.0f / Framerate),
     TimePassed(0),
     messageSent(false)
 {
@@ -44,6 +43,7 @@ UROSCameraComponent::~UROSCameraComponent()
 void UROSCameraComponent::InitializeComponent()
 {
     Super::InitializeComponent();
+    FrameTime = 1.0f / Framerate;
 }
 
 void UROSCameraComponent::BeginPlay()
@@ -130,7 +130,10 @@ void UROSCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
     MEASURE_TIME("Tick");
 
 
-
+    // CANDO: convert to grayscale to reduce latency?
+    // Manual conversion using OpenCV transformation values
+    // Y = 0.299 * R + 0.587 * G + 0.114 * B
+    
     // Read image
     ReadImage(Color->TextureTarget, ImageColor);
 
@@ -143,7 +146,7 @@ void UROSCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
     ImageMessage->header.seq = 0;
     ImageMessage->header.time = time;
-    ImageMessage->header.frame_id = ImageOpticalFrame;
+    ImageMessage->header.frame_id = ImageFrame;
 
     ImageMessage->height = Height;
     ImageMessage->width = Width;

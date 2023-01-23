@@ -47,6 +47,7 @@ public:
     UPROPERTY(BlueprintReadWrite, Category = "Vision Component")
         FString ImageFrame = TEXT("/unreal_ros/image_frame");
 
+    // TODO: remove, unused
     UPROPERTY(BlueprintReadWrite, Category = "Vision Component")
         FString ImageOpticalFrame = TEXT("/unreal_ros/image_optical_frame");
 
@@ -63,9 +64,7 @@ protected:
     virtual void InitializeComponent() override;
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-    virtual void TickComponent(float DeltaTime,
-        enum ELevelTick TickType,
-        FActorComponentTickFunction* TickFunction) override;
+    virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* TickFunction) override;
 
     float FrameTime, TimePassed;
     bool messageSent;

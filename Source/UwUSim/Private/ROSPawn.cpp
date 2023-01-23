@@ -52,8 +52,7 @@ void AROSPawn::BeginPlay()
 	PoseTopic = NewObject<UTopic>(UTopic::StaticClass());
     PoseTopic->Init(rosinst->ROSIntegrationCore, TEXT("/x3/pose_raw"), TEXT("geometry_msgs/Pose"));
 
-    // Create a std::function callback object
-    // TODO use std::bind to create callback function outside of BeginPlay
+    // Define lambda as callback function
     std::function<void(TSharedPtr<FROSBaseMsg>)> SubscribeCallback = [this](TSharedPtr<FROSBaseMsg> msg) -> void
     {
         auto Concrete = StaticCastSharedPtr<ROSMessages::geometry_msgs::Pose>(msg);
