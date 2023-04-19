@@ -8,6 +8,7 @@
 #include "ROSIntegration/Classes/RI/Topic.h"
 #include "ROSIntegration/Classes/ROSIntegrationGameInstance.h"
 #include "ROSIntegration/Public/geometry_msgs/Pose.h"
+#include "ROSIntegration/Public/rosgraph_msgs/Clock.h"
 #include "ROSIntegration/Public/std_msgs/String.h"
 
 #include "ROSPawn.generated.h"
@@ -22,6 +23,9 @@ public:
 	AROSPawn();
 
 	UPROPERTY(Transient)
+	UTopic* ClockTopic;
+
+	UPROPERTY(Transient)
 	UTopic* PoseTopic;
 
 	UFUNCTION(BlueprintCallable, Category = "ROSPawn Actions")
@@ -33,9 +37,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "ROSPawn Actions")
 	bool IsROSInitialized();
 
+	ROSMessages::rosgraph_msgs::Clock ROSTimestamp;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
 
 	FVector ROSPosePosition;
 	FQuat ROSPoseOrientation;

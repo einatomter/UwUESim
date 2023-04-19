@@ -12,6 +12,8 @@
 #include "ROSIntegration/Public/sensor_msgs/CameraInfo.h"
 #include "ROSIntegration/Public/sensor_msgs/Image.h"
 
+#include "ROSPawn.h"
+
 #include "StopTime.h"
 #include "ImageData.h"
 
@@ -42,7 +44,7 @@ public:
 
     // Camera for color
     UPROPERTY(Transient, EditAnywhere, BlueprintReadWrite, Category = "Vision Component")
-        USceneCaptureComponent2D* Color;
+        USceneCaptureComponent2D* SceneCapture;
 
     UPROPERTY(BlueprintReadWrite, Category = "Vision Component")
         FString ImageFrame = TEXT("/unreal_ros/image_frame");
@@ -70,6 +72,7 @@ protected:
     bool messageSent;
 
 private:
+    AROSPawn* owner = Cast<AROSPawn>(GetOwner());
 
     // Private data container
     ImageData* CurrentImage;
@@ -77,6 +80,7 @@ private:
     TArray<FFloat16Color> ImageColor;
 
     void ReadImage(UTextureRenderTarget2D* RenderTarget, TArray<FFloat16Color>& ImageData) const;
-    void SaveImageData(const TArray<FFloat16Color>& ImageData, uint8* Bytes) const;
+    void ReadImage2(UTextureRenderTarget2D* RenderTarget, TArray<FFloat16Color>& ImageData) const;
+    void SaveImageData(const TArray<FFloat16Color>& ImageData, uint8* Bytes, bool bMono = false) const;
 
 };

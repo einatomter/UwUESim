@@ -49,6 +49,21 @@ void AROSPawn::BeginPlay()
 
     RosInitialized = true;
 
+    // Initialize Clock topic
+    ClockTopic = NewObject<UTopic>(UTopic::StaticClass());
+    ClockTopic->Init(rosinst->ROSIntegrationCore, TEXT("/clock"), TEXT("rosgraph_msgs/Clock"));
+    ClockTopic->Subscribe([this](TSharedPtr<FROSBaseMsg> msg) {
+        auto Concrete = StaticCastSharedPtr<ROSMessages::rosgraph_msgs::Clock>(msg);
+        if (Concrete.IsValid())
+        {
+            ROSTimestamp._Clock = Concrete->_Clock;
+            //UE_LOG(LogTemp, Log, TEXT("Clock: %u %u"), Concrete->_Clock._Sec, Concrete->_Clock._NSec);
+        }
+        return;
+        });
+
+
+    // Initialize Pose topic
 	PoseTopic = NewObject<UTopic>(UTopic::StaticClass());
     PoseTopic->Init(rosinst->ROSIntegrationCore, TEXT("/x3/pose_raw"), TEXT("geometry_msgs/Pose"));
 

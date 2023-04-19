@@ -6,7 +6,7 @@
 UROSCameraComponent::UROSCameraComponent() :
     Width(960),
     Height(540),
-    Framerate(20),
+    Framerate(30),
     UseEngineFramerate(false),
     ServerPort(9090),
     TimePassed(0),
@@ -16,15 +16,13 @@ UROSCameraComponent::UROSCameraComponent() :
     PrimaryComponentTick.bCanEverTick = true;
     PrimaryComponentTick.bStartWithTickEnabled = true;
 
-    auto owner = GetOwner();
     if (owner)
     {
-        Color = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("ColorCapture"));
-        Color->SetupAttachment(this);
-        Color->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
-        Color->TextureTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("ColorTarget"));
-        Color->TextureTarget->InitAutoFormat(Width, Height);
-        Color->FOVAngle = FieldOfView;
+        SceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("ColorCapture"));
+        SceneCapture->SetupAttachment(this);
+        SceneCapture->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
+        SceneCapture->TextureTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("ColorTarget"));
+        SceneCapture->TextureTarget->InitAutoFormat(Width, Height);
     }
     else {
         UE_LOG(LogTemp, Warning, TEXT("No owner!"));
@@ -66,17 +64,21 @@ void UROSCameraComponent::BeginPlay()
         return;
     }
 
+    AspectRatio = (float)(Width/Height);
+
+    // Initialize scene capture
+    SceneCapture->TextureTarget->InitAutoFormat(Width, Height);
+    SceneCapture->FOVAngle = FieldOfView;
+    SceneCapture->bCaptureEveryFrame = true;
+    SceneCapture->bAutoActivate = true;
+    SceneCapture->bAlwaysPersistRenderingState = true;
+    SceneCapture->PostProcessSettings = this->PostProcessSettings;
+
+
     // Initializing buffers for reading images from the GPU
     ImageColor.AddUninitialized(Width * Height);
-    Color->TextureTarget->InitAutoFormat(Width, Height);
-
-
-    // TODO: Are these necessary?
-    // Reinit renderer
-    Color->TextureTarget->InitAutoFormat(Width, Height);
-    AspectRatio = Width / (float)Height;
-
-    CurrentImage = new ImageData(Width, Height);
+    //CurrentImage = new ImageData(Width, Height);
+    CurrentImage = new ImageData(Width, Height, true);
 
 
     // Initialize topics
@@ -129,17 +131,14 @@ void UROSCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
     TimePassed -= FrameTime;
     MEASURE_TIME("Tick");
 
+    FROSTime time = owner->ROSTimestamp._Clock;
 
-    // CANDO: convert to grayscale to reduce latency?
-    // Manual conversion using OpenCV transformation values
-    // Y = 0.299 * R + 0.587 * G + 0.114 * B
-    
     // Read image
-    ReadImage(Color->TextureTarget, ImageColor);
+    ReadImage(SceneCapture->TextureTarget, ImageColor);
 
-    SaveImageData(ImageColor, CurrentImage->ImagePtr);
+    //SaveImageData(ImageColor, CurrentImage->ImagePtr);
+    SaveImageData(ImageColor, CurrentImage->ImagePtr, true);
 
-    FROSTime time = FROSTime::Now();
 
     // ROS message construction image
     TSharedPtr<ROSMessages::sensor_msgs::Image> ImageMessage(new ROSMessages::sensor_msgs::Image());
@@ -150,8 +149,10 @@ void UROSCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
     ImageMessage->height = Height;
     ImageMessage->width = Width;
-    ImageMessage->encoding = TEXT("bgr8");
-    ImageMessage->step = Width * 3;
+    //ImageMessage->encoding = TEXT("bgr8");
+    //ImageMessage->step = Width * 3;
+    ImageMessage->encoding = TEXT("mono8");
+    ImageMessage->step = Width;
     ImageMessage->data = &CurrentImage->ImagePtr[0];
     ImagePublisher->Publish(ImageMessage);
 
@@ -238,6 +239,8 @@ void UROSCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
     CamInfo->roi.width = 0;
     CamInfo->roi.do_rectify = false;
 
+
+
     CameraInfoPublisher->Publish(CamInfo);
 
 }
@@ -248,10 +251,24 @@ void UROSCameraComponent::ReadImage(UTextureRenderTarget2D* RenderTarget, TArray
     RenderTargetResource->ReadFloat16Pixels(ImageData);
 }
 
-void UROSCameraComponent::SaveImageData(const TArray<FFloat16Color>& ImageData, uint8* Bytes) const
+void UROSCameraComponent::SaveImageData(const TArray<FFloat16Color>& ImageData, uint8* Bytes, bool bMono) const
 {
     const FFloat16Color* itI = ImageData.GetData();
     uint8_t* itO = Bytes;
+
+    if (bMono)
+    {
+        // Manual conversion using OpenCV transformation values
+        // Y = 0.299 * R + 0.587 * G + 0.114 * B
+
+        // Converts Float colors to bytes
+        for (size_t i = 0; i < ImageData.Num(); ++i, ++itI, ++itO)
+        {
+            *itO = (uint8_t)std::round(std::min(((float)(itI->R*0.299) + (float)(itI->G*0.587) + (float)(itI->B * 0.114)) * 255.f, 255.f));
+        }
+
+        return;
+    }
 
     // Converts Float colors to bytes
     for (size_t i = 0; i < ImageData.Num(); ++i, ++itI, ++itO)

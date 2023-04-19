@@ -14,6 +14,15 @@ ImageData::ImageData(const uint32 Width, const uint32 Height) :
 	ImagePtr = &ImageBuffer[0];
 }
 
+ImageData::ImageData(const uint32 Width, const uint32 Height, bool mono) :
+	ImageSize(Width* Height * sizeof(uint8))
+{
+	ImageBuffer.resize(ImageSize);
+
+	// TODO: Revisit, may not need to declare pointer until publishing
+	ImagePtr = &ImageBuffer[0];
+}
+
 ImageData::~ImageData()
 {
 }

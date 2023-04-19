@@ -13,6 +13,7 @@ class UWUSIM_API ImageData
 {
 public:
     ImageData(const uint32 Width, const uint32 Height);
+    ImageData(const uint32 Width, const uint32 Height, bool mono);
     ~ImageData();
 
     const uint32 ImageSize;         // Size of image
