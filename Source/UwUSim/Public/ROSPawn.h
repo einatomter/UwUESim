@@ -38,6 +38,8 @@ public:
 	bool IsROSInitialized();
 
 	ROSMessages::rosgraph_msgs::Clock ROSTimestamp;
+	FROSTime ROSLocalTimestamp;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -48,6 +50,7 @@ protected:
 	FQuat ROSPoseOrientation;
 
 	bool RosInitialized;
+	bool ReceivedTimestamp;
 
 public:	
 	// Called every frame

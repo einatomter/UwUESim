@@ -31,6 +31,8 @@ void AROSPawn::BeginPlay()
 	Super::BeginPlay();
 
     RosInitialized = false;
+    ReceivedTimestamp = false;
+
 	UROSIntegrationGameInstance* rosinst = Cast<UROSIntegrationGameInstance>(GetGameInstance());
     
     // Check for valid ROS instance
@@ -56,6 +58,15 @@ void AROSPawn::BeginPlay()
         auto Concrete = StaticCastSharedPtr<ROSMessages::rosgraph_msgs::Clock>(msg);
         if (Concrete.IsValid())
         {
+            if (ReceivedTimestamp == false)
+            {
+                ReceivedTimestamp = true;
+                ROSLocalTimestamp.SetUseSimTime(true);
+                ROSLocalTimestamp.SetSimTime(Concrete->_Clock);
+            }
+            //else
+                //UE_LOG(LogTemp, Log, TEXT("Local clock: %u %u"), ROSLocalTimestamp._Sec, ROSLocalTimestamp._NSec);
+
             ROSTimestamp._Clock = Concrete->_Clock;
             //UE_LOG(LogTemp, Log, TEXT("Clock: %u %u"), Concrete->_Clock._Sec, Concrete->_Clock._NSec);
         }

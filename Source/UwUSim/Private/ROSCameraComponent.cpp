@@ -131,14 +131,13 @@ void UROSCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
     TimePassed -= FrameTime;
     MEASURE_TIME("Tick");
 
-    FROSTime time = owner->ROSTimestamp._Clock;
-
     // Read image
     ReadImage(SceneCapture->TextureTarget, ImageColor);
 
     //SaveImageData(ImageColor, CurrentImage->ImagePtr);
     SaveImageData(ImageColor, CurrentImage->ImagePtr, true);
 
+    FROSTime time = owner->ROSTimestamp._Clock;
 
     // ROS message construction image
     TSharedPtr<ROSMessages::sensor_msgs::Image> ImageMessage(new ROSMessages::sensor_msgs::Image());
