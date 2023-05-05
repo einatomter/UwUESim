@@ -58,12 +58,12 @@ void AROSPawn::BeginPlay()
         auto Concrete = StaticCastSharedPtr<ROSMessages::rosgraph_msgs::Clock>(msg);
         if (Concrete.IsValid())
         {
-            if (ReceivedTimestamp == false)
-            {
-                ReceivedTimestamp = true;
-                ROSLocalTimestamp.SetUseSimTime(true);
-                ROSLocalTimestamp.SetSimTime(Concrete->_Clock);
-            }
+            //if (ReceivedTimestamp == false)
+            //{
+            //    ReceivedTimestamp = true;
+            //    ROSLocalTimestamp.SetUseSimTime(true);
+            //    ROSLocalTimestamp.SetSimTime(Concrete->_Clock);
+            //}
             //else
                 //UE_LOG(LogTemp, Log, TEXT("Local clock: %u %u"), ROSLocalTimestamp._Sec, ROSLocalTimestamp._NSec);
 

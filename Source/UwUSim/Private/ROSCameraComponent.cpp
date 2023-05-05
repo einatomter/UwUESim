@@ -20,7 +20,7 @@ UROSCameraComponent::UROSCameraComponent() :
     {
         SceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("ColorCapture"));
         SceneCapture->SetupAttachment(this);
-        SceneCapture->CaptureSource = ESceneCaptureSource::SCS_FinalColorLDR;
+        SceneCapture->CaptureSource = ESceneCaptureSource::SCS_FinalToneCurveHDR;
         SceneCapture->TextureTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("ColorTarget"));
         SceneCapture->TextureTarget->InitAutoFormat(Width, Height);
     }
@@ -73,6 +73,11 @@ void UROSCameraComponent::BeginPlay()
     SceneCapture->bAutoActivate = true;
     SceneCapture->bAlwaysPersistRenderingState = true;
     SceneCapture->PostProcessSettings = this->PostProcessSettings;
+    //SceneCapture->PostProcessSettings.AutoExposureBias += 0.5;
+    //SceneCapture->ShowFlagSettings;
+    
+    UE_LOG(LogTemp, Log, TEXT("Camera Exposure Bias: %f"), this->PostProcessSettings.AutoExposureBias);
+    UE_LOG(LogTemp, Log, TEXT("SceneCapture Exposure Bias: %f"), SceneCapture->PostProcessSettings.AutoExposureBias);
 
 
     // Initializing buffers for reading images from the GPU
@@ -131,11 +136,15 @@ void UROSCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
     TimePassed -= FrameTime;
     MEASURE_TIME("Tick");
 
+    //UE_LOG(LogTemp, Log, TEXT("Clock1: %u %u"), owner->ROSTimestamp._Clock._Sec, owner->ROSTimestamp._Clock._NSec);
+
     // Read image
     ReadImage(SceneCapture->TextureTarget, ImageColor);
 
     //SaveImageData(ImageColor, CurrentImage->ImagePtr);
     SaveImageData(ImageColor, CurrentImage->ImagePtr, true);
+
+    //UE_LOG(LogTemp, Log, TEXT("Clock2: %u %u \n\n"), owner->ROSTimestamp._Clock._Sec, owner->ROSTimestamp._Clock._NSec);
 
     FROSTime time = owner->ROSTimestamp._Clock;
 
