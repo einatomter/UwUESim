@@ -6,7 +6,7 @@
 UROSCameraComponent::UROSCameraComponent() :
     Width(960),
     Height(540),
-    Framerate(30),
+    Framerate(20),
     UseEngineFramerate(false),
     ServerPort(9090),
     TimePassed(0),
@@ -16,17 +16,16 @@ UROSCameraComponent::UROSCameraComponent() :
     PrimaryComponentTick.bCanEverTick = true;
     PrimaryComponentTick.bStartWithTickEnabled = true;
 
-    if (owner)
-    {
-        SceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("ColorCapture"));
-        SceneCapture->SetupAttachment(this);
-        SceneCapture->CaptureSource = ESceneCaptureSource::SCS_FinalToneCurveHDR;
-        SceneCapture->TextureTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("ColorTarget"));
-        SceneCapture->TextureTarget->InitAutoFormat(Width, Height);
-    }
-    else {
-        UE_LOG(LogTemp, Warning, TEXT("No owner!"));
-    }
+    //if (owner)
+    //{
+    //    SceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("ColorCapture"));
+    //    SceneCapture->SetupAttachment(this);
+    //    SceneCapture->CaptureSource = ESceneCaptureSource::SCS_FinalToneCurveHDR;
+
+    //}
+    //else {
+    //    UE_LOG(LogTemp, Warning, TEXT("No owner!"));
+    //}
 
 
 
@@ -48,6 +47,16 @@ void UROSCameraComponent::BeginPlay()
 {
     Super::BeginPlay();
 
+    if (owner)
+    {
+        SceneCapture = owner->GetSceneCaptureComponent();
+        //    SceneCapture->TextureTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("ColorTarget"));
+        //    SceneCapture->TextureTarget->InitAutoFormat(Width, Height);
+    }
+    else {
+        UE_LOG(LogTemp, Warning, TEXT("No owner!"));
+    }
+
     UROSIntegrationGameInstance* rosinst = Cast<UROSIntegrationGameInstance>(GetOwner()->GetGameInstance());
 
     // Check for valid ROS instance
@@ -66,18 +75,17 @@ void UROSCameraComponent::BeginPlay()
 
     AspectRatio = (float)(Width/Height);
 
-    // Initialize scene capture
+    //// Initialize scene capture
     SceneCapture->TextureTarget->InitAutoFormat(Width, Height);
     SceneCapture->FOVAngle = FieldOfView;
-    SceneCapture->bCaptureEveryFrame = true;
-    SceneCapture->bAutoActivate = true;
-    SceneCapture->bAlwaysPersistRenderingState = true;
     SceneCapture->PostProcessSettings = this->PostProcessSettings;
-    //SceneCapture->PostProcessSettings.AutoExposureBias += 0.5;
+    //SceneCapture->bCaptureEveryFrame = true;
+    //SceneCapture->bAutoActivate = true;
+    //SceneCapture->bAlwaysPersistRenderingState = true;
     //SceneCapture->ShowFlagSettings;
     
-    UE_LOG(LogTemp, Log, TEXT("Camera Exposure Bias: %f"), this->PostProcessSettings.AutoExposureBias);
-    UE_LOG(LogTemp, Log, TEXT("SceneCapture Exposure Bias: %f"), SceneCapture->PostProcessSettings.AutoExposureBias);
+    //UE_LOG(LogTemp, Log, TEXT("Camera Exposure Bias: %f"), this->PostProcessSettings.AutoExposureBias);
+    //UE_LOG(LogTemp, Log, TEXT("SceneCapture Exposure Bias: %f"), SceneCapture->PostProcessSettings.AutoExposureBias);
 
 
     // Initializing buffers for reading images from the GPU

@@ -8,6 +8,10 @@ AROSPawn::AROSPawn()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+    // Create and attach the scene capture component
+    SceneCapture = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("SceneCapture"));
+    SceneCapture->TextureTarget = CreateDefaultSubobject<UTextureRenderTarget2D>(TEXT("ColorTarget"));
+    SceneCapture->TextureTarget->InitAutoFormat(1920, 1080);
 }
 
 FVector AROSPawn::GetROSPosePosition()
@@ -23,6 +27,11 @@ FQuat AROSPawn::GetROSPoseOrientation()
 bool AROSPawn::IsROSInitialized()
 {
     return RosInitialized;
+}
+
+USceneCaptureComponent2D* AROSPawn::GetSceneCaptureComponent()
+{
+    return SceneCapture;
 }
 
 // Called when the game starts or when spawned

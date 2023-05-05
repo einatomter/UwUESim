@@ -43,7 +43,7 @@ public:
         int32 ServerPort;
 
     // Camera for color
-    UPROPERTY(Transient, EditAnywhere, BlueprintReadWrite, Category = "Vision Component")
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vision Component")
         USceneCaptureComponent2D* SceneCapture;
 
     UPROPERTY(BlueprintReadWrite, Category = "Vision Component")

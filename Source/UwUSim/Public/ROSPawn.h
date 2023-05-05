@@ -11,6 +11,10 @@
 #include "ROSIntegration/Public/rosgraph_msgs/Clock.h"
 #include "ROSIntegration/Public/std_msgs/String.h"
 
+//#include "ROSCameraComponent.h"
+#include "Components/SceneCaptureComponent2D.h"
+#include "Engine/TextureRenderTarget2D.h"
+
 #include "ROSPawn.generated.h"
 
 UCLASS()
@@ -40,6 +44,10 @@ public:
 	ROSMessages::rosgraph_msgs::Clock ROSTimestamp;
 	FROSTime ROSLocalTimestamp;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	USceneCaptureComponent2D* SceneCapture;
+
+	USceneCaptureComponent2D* GetSceneCaptureComponent();
 
 protected:
 	// Called when the game starts or when spawned
