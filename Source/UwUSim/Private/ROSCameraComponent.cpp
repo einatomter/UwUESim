@@ -144,6 +144,7 @@ void UROSCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
     TimePassed -= FrameTime;
     MEASURE_TIME("Tick");
 
+
     //UE_LOG(LogTemp, Log, TEXT("Clock1: %u %u"), owner->ROSTimestamp._Clock._Sec, owner->ROSTimestamp._Clock._NSec);
 
     // Read image
@@ -154,7 +155,36 @@ void UROSCameraComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
     //UE_LOG(LogTemp, Log, TEXT("Clock2: %u %u \n\n"), owner->ROSTimestamp._Clock._Sec, owner->ROSTimestamp._Clock._NSec);
 
+
     FROSTime time = owner->ROSTimestamp._Clock;
+    if (time._Sec <= 0)
+    {
+        return;
+    }
+
+    //UE_LOG(LogTemp, Log, TEXT("Clock: %u %u"), time._Sec, time._NSec);
+
+    //// Add/subtract a time offset
+    //{
+    //    double tOffsetSec = -0.1;
+    //    long long offset_ns = static_cast<long long>(tOffsetSec * 1e9);
+    //    long long new_nsec = static_cast<long long>(time._NSec) + offset_ns;
+
+    //    // Handle nanoseconds underflow
+    //    while (new_nsec < 0) {
+    //        new_nsec += 1e9;
+    //        time._Sec -= 1;
+    //    }
+
+    //    // Handle nanoseconds overflow
+    //    while (new_nsec >= 1e9) {
+    //        new_nsec -= 1e9;
+    //        time._Sec += 1;
+    //    }
+
+    //    time._NSec = static_cast<unsigned long>(new_nsec);
+    //}
+
 
     // ROS message construction image
     TSharedPtr<ROSMessages::sensor_msgs::Image> ImageMessage(new ROSMessages::sensor_msgs::Image());
